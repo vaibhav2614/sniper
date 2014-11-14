@@ -111,6 +111,13 @@ def ajaxtest():
 def test():
     from cron import poll
 
+    # Make sure tables exist. If not, create them
+    try:
+        db.session.query(User).first()
+        db.session.query(Snipe).first()
+    except Exception:
+        db.create_all()
+
     soc = Soc()
     math_courses = soc.get_courses(640)
     open_courses = poll(640, result = True)
