@@ -2,7 +2,7 @@
     Sniper is an application that hits the Rutgers SOC API and notifies users when a class opens up. """
 
 from flask import Flask, render_template, request
-from wtforms import Form, TextField, validators
+from wtforms import Form, TextField, RadioField, validators
 from wtforms.validators import StopValidation
 from models import Snipe, db, User
 from flaskext.mail import Mail
@@ -37,6 +37,7 @@ mail = Mail(app)
 class SnipeForm(Form):
     """ Represents the Snipe form on the homepage. """
     email = TextField('Email', [validators.Email(), validators.Required()])
+    campus = RadioField('Campus', choices=[('NB', 'New Brunswick'), ('NK', 'Newark'), ('CM', 'Camden')])
     subject = TextField('Subject')
     course_number = TextField('Course Number', [validators.Length(min=2, max=4), validators.NumberRange()])
     section = TextField('Section', [validators.Length(min=1, max=4)])
