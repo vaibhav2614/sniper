@@ -65,7 +65,7 @@ class SnipeForm(Form):
     def save(self):
         """ Saves to SQLAlchemy User and Snipe models """
 
-        snipe = Snipe.create(self.email.data, self.subject.data, self.course_number.data, self.section.data)
+        snipe = Snipe.create(self.email.data, self.campus.data, self.subject.data, self.course_number.data, self.section.data)
 
         db.session.add(snipe)
         db.session.commit()

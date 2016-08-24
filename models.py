@@ -6,9 +6,11 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db/production.db'
 db = SQLAlchemy(app)
 
+
 class Snipe(db.Model):
     """ A snipe model represents the course info pertaining to a snipe"""
     id = db.Column(db.Integer, primary_key=True)
+    campus = db.Column(db.String(2), default='NB')
     subject = db.Column(db.String(8))
     course_number = db.Column(db.String(8))
     section = db.Column(db.String(8))
@@ -16,24 +18,22 @@ class Snipe(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     @classmethod
-    def create(cls, email, subject, course_number, section):
+    def create(cls, email, campus, subject, course_number, section):
         """ Creates a snipe, and its corresponding user if they don't already exist"""
+
         # see if the user exists already
         user = User.query.filter_by(email=email).first()
-
         if not user:
-            return Snipe(email, subject, course_number, section)
+            return Snipe(email, campus, subject, course_number, section)
 
         # see if the snipe exists already
-        snipe = Snipe.query.filter_by(user=user, subject=subject, course_number=course_number, section=section).first()
+        snipe = Snipe.query.filter_by(user=user, campus=campus, subject=subject, course_number=course_number, section=section).first()
         if not snipe:
-            return Snipe(email, subject, course_number, section)
+            return Snipe(email, campus, subject, course_number, section)
 
         return snipe
 
-
-
-    def __init__(self, email, subject, course_number, section):
+    def __init__(self, email, campus, subject, course_number, section):
         user = User.query.filter_by(email=email).first()
         if user:
             self.user = user
@@ -41,12 +41,14 @@ class Snipe(db.Model):
             user = User(email)
         
         self.subject = subject
+        self.campus = campus
         self.course_number = course_number
         self.section = section
         self.user = user
 
     def __repr__(self):
-        return '(%s:%s:%s)' % (self.subject, self.course_number, self.section)
+        return '(%s:%s:%s:%s)' % (self.campus, self.subject, self.course_number, self.section)
+
 
 class User(db.Model):
     """ Represents a user in the database (phone_number and email pair). """
