@@ -75,6 +75,7 @@ def notify(snipe, index):
 
         attributes = {
             'email': snipe.user.email,
+            'campus': snipe.campus
             'subject': snipe.subject,
             'course_number': snipe.course_number,
             'section': snipe.section,
