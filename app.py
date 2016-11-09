@@ -114,7 +114,7 @@ def test():
 
     soc = Soc()
     math_courses = soc.get_courses(640)
-    open_courses = poll(640, result = True)
+    open_courses = poll('NB', 640, result = True)
     for dept, sections in open_courses.iteritems():
         open_courses[dept] = [section.number for section in sections]
 
