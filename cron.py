@@ -75,10 +75,10 @@ def notify(snipe, index):
 
         attributes = {
             'email': snipe.user.email,
-            'campus': snipe.campus
+            'campus': snipe.campus,
             'subject': snipe.subject,
             'course_number': snipe.course_number,
-            'section': snipe.section,
+            'section': snipe.section
         }
 
         # build the url for prepopulated form
