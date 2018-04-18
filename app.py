@@ -2,7 +2,7 @@
     Sniper is an application that hits the Rutgers SOC API and notifies users when a class opens up. """
 
 from flask import Flask, render_template, request
-from wtforms import Form, TextField, validators
+from wtforms import Form, TextField, RadioField, validators
 from wtforms.validators import StopValidation
 from models import Snipe, db, User
 from flaskext.mail import Mail
@@ -37,6 +37,7 @@ mail = Mail(app)
 class SnipeForm(Form):
     """ Represents the Snipe form on the homepage. """
     email = TextField('Email', [validators.Email(), validators.Required()])
+    campus = RadioField('Campus', choices=[('NB', 'New Brunswick'), ('NK', 'Newark'), ('CM', 'Camden')])
     subject = TextField('Subject')
     course_number = TextField('Course Number', [validators.Length(min=2, max=4), validators.NumberRange()])
     section = TextField('Section', [validators.Length(min=1, max=4)])
@@ -64,7 +65,7 @@ class SnipeForm(Form):
     def save(self):
         """ Saves to SQLAlchemy User and Snipe models """
 
-        snipe = Snipe.create(self.email.data, self.subject.data, self.course_number.data, self.section.data)
+        snipe = Snipe.create(self.email.data, self.campus.data, self.subject.data, self.course_number.data, self.section.data)
 
         db.session.add(snipe)
         db.session.commit()
@@ -113,7 +114,7 @@ def test():
 
     soc = Soc()
     math_courses = soc.get_courses(640)
-    open_courses = poll(640, result = True)
+    open_courses = poll('NB', 640, result = True)
     for dept, sections in open_courses.iteritems():
         open_courses[dept] = [section.number for section in sections]
 

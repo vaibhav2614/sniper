@@ -9,21 +9,29 @@ from app import mail, app
 import datetime
 from collections import namedtuple
 
-soc = Soc()
-
 EMAIL_SENDER = "Course Sniper <sniper@rutgers.io>"
+CAMPUSES = ['NB', 'NK', 'CM']
+
+socs = {
+    'NB': Soc(campus='NB'),
+    'NK': Soc(campus='NK'),
+    'CM': Soc(campus='CM')
+}
 
 Section = namedtuple('Section', ['number', 'index'])
 
-def poll(subject, result=False):
+def poll(campus, subject, result=False):
     """ Poll a subject for open courses. """
-    app.logger.warning("Polling for %s" % (subject))
+    app.logger.warning("Polling for %s %s" % (campus, subject))
+
+    soc = socs[campus]
 
     # get all the course data from SOC
     courses = soc.get_courses(subject)
 
     # build information about which courses/sections are currently open.
     open_data = {}
+
     if courses is not None:
         for course in courses:
             course_number = course['courseNumber']
@@ -41,35 +49,36 @@ def poll(subject, result=False):
                 if section['openStatus']:
                     open_data[course_number].append(Section(section_number, section['index']))
 
-        # all of these course numbers are open
+        # all of these course numbers have an open section
         open_courses = [course for course, open_sections in open_data.iteritems() if open_sections]
 
         if result:
             return open_data
 
         if open_courses:
-            # Notify people that were looking for these courses
-            snipes = Snipe.query.filter(Snipe.course_number.in_(open_courses), Snipe.subject==str(subject))
+            # Notify people that were looking for open sections to these courses
+            snipes = Snipe.query.filter(Snipe.campus==campus, Snipe.course_number.in_(open_courses), Snipe.subject==str(subject))
             for snipe in snipes:
                 for section in open_data[snipe.course_number]:
                     if section.number == snipe.section:
                         notify(snipe, section.index)
         else:
-            app.logger.warning('Subject "%s" has no open courses' % (subject))
+            app.logger.warning('Subject "%s:%s" has no open courses' % (campus, subject))
     else:
-        app.logger.warning('Subject "%s" is not valid' % (subject))
+        app.logger.warning('Subject "%s:%s" is not valid' % (campus, subject))
 
 def notify(snipe, index):
     """ Notify this snipe that their course is open"""
-    course = '%s:%s:%s' % (snipe.subject, snipe.course_number, snipe.section)
+    course = '%s:%s:%s:%s' % (snipe.campus, snipe.subject, snipe.course_number, snipe.section)
 
     if snipe.user.email:
 
         attributes = {
             'email': snipe.user.email,
+            'campus': snipe.campus,
             'subject': snipe.subject,
             'course_number': snipe.course_number,
-            'section': snipe.section,
+            'section': snipe.section
         }
 
         # build the url for prepopulated form
@@ -82,7 +91,6 @@ def notify(snipe, index):
         # send out the email
         message = Message('[Course Sniper](%s) is open' %(course), sender=EMAIL_SENDER)
         message.body = email_text
-        message.add_recipient(snipe.user.email)
         message.add_recipient(snipe.user.email)
 
         mail.send(message)
@@ -98,5 +106,7 @@ if __name__ == '__main__':
     # get all the courses that should be queried.
     app.logger.warning("----------- Running the Cron %s " % (str(datetime.datetime.now())))
     subjects = db.session.query(Snipe.subject).distinct().all()
-    for subject in subjects:
-        poll(subject[0])
+    for campus in CAMPUSES:
+        app.logger.warning("Polling subjects for campus %s " % (campus))
+        for subject in subjects:
+            poll(campus, subject[0])

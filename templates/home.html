@@ -12,11 +12,17 @@
         <form method=post action="/">
             <dl class="animated fadeIn">
                 {{ render_field(form.email, placeholder="you@example.com") }}
-                {{ render_field(form.subject, placeholder="Department Number. Ex: '640' for Math", autocomplete="off") }}
-                {{ render_field(form.course_number, placeholder="Ex: '151' for Calculus I") }}
+                {{ render_field(form.campus) }}
+                {{ render_field(form.subject, 
+                    placeholder="Department Number. Ex: '640' for Math", 
+                    autocomplete="off") }}
+                {{ render_field(form.course_number, 
+                    placeholder="Ex: '151' for Calculus I") }}
                 {{ render_field(form.section) }}
             </dl>
-            <div class="text-center"><button class="btn btn-danger animated fadeIn" type="submit">Snipe</button></div>
+            <div class="text-center">
+                <button class="btn btn-danger animated fadeIn" type="submit">Snipe</button>
+            </div>
         </form>
       </div>
     </div>
