@@ -11,7 +11,7 @@ from collections import namedtuple
 
 soc = Soc()
 
-EMAIL_SENDER = "Course Sniper <sniper@rutgers.io>"
+EMAIL_SENDER = "Course Sniper <brimck89@gmail.com>"
 
 Section = namedtuple('Section', ['number', 'index'])
 
