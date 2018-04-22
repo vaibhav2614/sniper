@@ -25,7 +25,7 @@ file_handler.setFormatter(Formatter('%(asctime)s %(levelname)s: %(message)s [in 
 app.logger.addHandler(file_handler)
 
 app.wsgi_app = ProxyFix(app.wsgi_app)
-app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_SERVER'] = 'smtp.sendgrid.net'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USERNAME'] = mail_username
