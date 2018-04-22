@@ -25,7 +25,6 @@ file_handler.setFormatter(Formatter('%(asctime)s %(levelname)s: %(message)s [in 
 app.logger.addHandler(file_handler)
 
 app.wsgi_app = ProxyFix(app.wsgi_app)
-
 app.config['MAIL_SERVER'] = 'smtp.sendgrid.net'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
@@ -103,7 +102,7 @@ def ajaxtest():
 
         message = Message('Sniper tests are failing', sender=EMAIL_SENDER)
         message.body = 'FIX IT'
-        message.add_recipient('vaibhav2614@gmail.com')
+        message.add_recipient('brimck89@gmail.com')
         mail.send(message)
 
     return json.dumps(result)

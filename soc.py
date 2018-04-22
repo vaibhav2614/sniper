@@ -6,7 +6,7 @@ import requests
 
 class Soc:
     """ Communicates with Rutgers SOC """
-    def __init__(self, campus='NB', semester='12018', level='U,G'):
+    def __init__(self, campus='NB', semester='92018', level='U'):
         """ We always use certain parameters"""
         self.base_url = 'http://sis.rutgers.edu/soc'
         self.params = {
@@ -17,9 +17,8 @@ class Soc:
 
         # Spoof the user agent for good measure
         self.headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1 (KHTML, like Gecko) Chrome/21.0.1180.60 Safari/537.1',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.119 Safari/537.36',
         }
-
 
     def query(self, resource, params):
         """Queries the given resource (a string) with the given parameters.
