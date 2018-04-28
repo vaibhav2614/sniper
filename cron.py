@@ -83,7 +83,6 @@ def notify(snipe, index):
         message = Message('[Course Sniper](%s) is open' %(course), sender=EMAIL_SENDER)
         message.body = email_text
         message.add_recipient(snipe.user.email)
-        message.add_recipient(snipe.user.email)
 
         mail.send(message)
 
